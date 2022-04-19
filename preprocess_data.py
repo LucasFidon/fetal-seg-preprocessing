@@ -20,7 +20,7 @@ NUM_ITER_MASK_DILATION = 5
 NO_SKULL_STRIP = False  # for having non skull-stripped images for figures
 # SKULL_STRIP_AUG = True  # every image is save twice: w and \w skull stripping
 
-SAVE_PATH = os.path.join(DATA_FOLDER, 'fetal_training_Mar22')
+SAVE_PATH = os.path.join(DATA_FOLDER, 'fetal_training_Apr22')
 LABELS_SUPERSET_MAP = {
     9: [LABELS['wm'], LABELS['corpus_callosum']],
 }
@@ -495,7 +495,7 @@ if __name__ == '__main__':
     # Get info for all the studies required for the selected config
     samples = []
 
-    print('Prepare March 2022 dataset')
+    print('Prepare April 2022 dataset')
     # Data Model Dec 2021
     # Zurich data
     samples += get_normalized_studies(CORRECTED_ZURICH_DATA_DIR)  # 30
@@ -523,6 +523,11 @@ if __name__ == '__main__':
     samples += get_CDH_Doaa_longitudinal2()  # 50
     samples += get_normalized_studies(DATA_FOLDER_CDH)  # 16
     samples += get_normalized_studies(DATA_FOLDER_CONTROLS_WITH_EXTCSF_MA)  # 26
+    # From here: New in April 2022
+    samples += get_normalized_studies(DATA_FOLDER_KCL_VM)  # 48
+    samples += get_normalized_studies(DATA_FOLDER_UCLH_MMC)  # 15
+    samples += get_normalized_studies(DATA_FOLDER_NADA_CONTROLS2_MA_CC)  # 2
+    samples += get_normalized_studies(DATA_FOLDER_NADA_CONTROLS2_DOAA)  # 4
 
     SAVE_DATA_FOLDER = SAVE_PATH
 

@@ -36,12 +36,13 @@ DATA_FOLDER_CDH_LONG2 = os.path.join(BASE_FOLDER, 'Doaa_brain_longitudinal_SRR_a
 DATA_FOLDER_DHCP_GROUP = os.path.join(BASE_FOLDER, 'dHCP_neonats_upto38GA_correctedLF')
 DATA_FOLDER_CONTROLS_WITH_EXTCSF_MA = os.path.join(DATA_FOLDER_NADA_GROUP, 'Controls_with_extcsf_MA')
 DATA_FOLDER_NADA_CONTROLS2_MA_CC = os.path.join(DATA_FOLDER_NADA_GROUP, 'Nada_controls2_MA_CC')
+DATA_FOLDER_NADA_CONTROLS2_DOAA = os.path.join(DATA_FOLDER_NADA_GROUP, 'Nada_controls2_Doaa')
 DATA_FOLDER_CDH = os.path.join(DATA_FOLDER_NADA_GROUP, 'CDH')
 DATA_FOLDER_LEUVEN_MMC = os.path.join(DATA_FOLDER_NADA_GROUP, 'Leuven_MMC')
 DATA_FOLDER_UCLH_MMC = os.path.join(DATA_FOLDER_NADA_GROUP, 'UCLH_MMC')
 DATA_FOLDER_UCLH_MMC_2 = os.path.join(DATA_FOLDER_NADA_GROUP, 'UCLH_MMC_2')
 DATA_FOLDER_VIENNA_MMC = os.path.join(DATA_FOLDER_NADA_GROUP, 'vienna_MMC_unoperated')
-DATA_FOLDER_CONTROLS2_PARTIAL_FULLYSEG = os.path.join(DATA_FOLDER_NADA_GROUP, 'Controls_2_partial')  # testing sometimes
+DATA_FOLDER_CONTROLS2_PARTIAL_FULLYSEG = os.path.join(DATA_FOLDER_NADA_GROUP, 'Controls_2_partial')
 DATA_FOLDER_THOMAS_GROUP1 = os.path.join(DATA_FOLDER_MICHAEL_GROUP, 'Abnormal_cases')
 DATA_FOLDER_THOMAS_GROUP2 = os.path.join(DATA_FOLDER_MICHAEL_GROUP, 'Abnormal_cases_Mar20')
 
@@ -68,7 +69,7 @@ FETA_CHALLENGE_DIR = os.path.join(DATA_FOLDER, 'FetalDataFeTAChallengeIRTK_Jun21
 
 # KCL DATA
 DATA_FOLDER_KCL_CONTROLS = os.path.join(BASE_FOLDER, 'SRR_and_Seg_KCL', 'Control')
-DATA_FOLDER_KCL_VM = os.path.join(DATA_FOLDER, 'KCL_fetal3d_data', 'ventriculomegaly_template')
+DATA_FOLDER_KCL_VM = os.path.join(BASE_FOLDER, 'SRR_and_Seg_KCL', 'Ventriculomegaly')
 
 
 LABELS = {
