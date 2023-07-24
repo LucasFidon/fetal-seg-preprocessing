@@ -10,6 +10,7 @@ import csv
 import numpy as np
 import nibabel as nib
 import random
+from loguru import logger
 from scipy.ndimage.morphology import binary_dilation, binary_erosion
 from scipy.ndimage import binary_fill_holes
 from definitions import *
@@ -20,7 +21,7 @@ NUM_ITER_MASK_DILATION = 5
 NO_SKULL_STRIP = False  # for having non skull-stripped images for figures
 # SKULL_STRIP_AUG = True  # every image is save twice: w and \w skull stripping
 
-SAVE_PATH = os.path.join(DATA_FOLDER, 'fetal_training_Apr22')
+SAVE_PATH = os.path.join(DATA_FOLDER, 'fetal_training_Jun23')
 LABELS_SUPERSET_MAP = {
     9: [LABELS['wm'], LABELS['corpus_callosum']],
 }
@@ -123,7 +124,7 @@ def get_Thomas_group_studies():
             pat_id, study_nb, srr_path, mask_path, parc_path)
         samples_list.append(new_sample)
         count += 1
-    print("Found %d abnormal brain studies in %s." % (count, folder_path))
+    logger.info("Found %d abnormal brain studies in %s." % (count, folder_path))
     return samples_list
 
 
@@ -151,7 +152,7 @@ def get_Thomas_group_Mar20_studies():
             pat_id, study_nb, srr_path, mask_path, parc_path)
         samples_list.append(new_sample)
         count += 1
-    print("Found %d abnormal brain studies in %s." % (count, folder_path))
+    logger.info("Found %d abnormal brain studies in %s." % (count, folder_path))
     return samples_list
 
 
@@ -178,7 +179,7 @@ def get_CDH_Doaa_studies():
                 pat_id, study_nb, srr_path, mask_path, parc_path)
             samples_list.append(new_sample)
             count += 1
-        print("Found %d CDH studies in %s." % (count, folder_path))
+        logger.info("Found %d CDH studies in %s." % (count, folder_path))
     return samples_list
 
 
@@ -200,7 +201,7 @@ def get_CDH_Doaa_longitudinal():
             pat_id, study_nb, srr_path, mask_path, parc_path)
         samples_list.append(new_sample)
         count += 1
-    print("Found %d CDH studies in %s." % (count, DATA_FOLDER_CDH_LONG))
+    logger.info("Found %d CDH studies in %s." % (count, DATA_FOLDER_CDH_LONG))
     return samples_list
 
 
@@ -222,7 +223,7 @@ def get_CDH_Doaa_longitudinal2():
             pat_id, study_nb, srr_path, mask_path, parc_path)
         samples_list.append(new_sample)
         count += 1
-    print("Found %d CDH studies in %s." % (count, DATA_FOLDER_CDH_LONG2))
+    logger.info("Found %d CDH studies in %s." % (count, DATA_FOLDER_CDH_LONG2))
     return samples_list
 
 
@@ -245,7 +246,7 @@ def get_Controls_Doaa():  # 7 new controls
             pat_id, study_nb, srr_path, mask_path, parc_path)
         samples_list.append(new_sample)
         count += 1
-    print("Found %d control studies in %s." % (count, folder_path))
+    logger.info("Found %d control studies in %s." % (count, folder_path))
     return samples_list
 
 
@@ -268,7 +269,7 @@ def get_SB_Fred():
             pat_id, study_nb, srr_path, mask_path, parc_path)
         samples_list.append(new_sample)
         count += 1
-    print("Found %d control studies in %s." % (count, folder_path))
+    logger.info("Found %d control studies in %s." % (count, folder_path))
     return samples_list
 
 
@@ -291,7 +292,7 @@ def get_SB_Fred2():
             pat_id, study_nb, srr_path, mask_path, parc_path)
         samples_list.append(new_sample)
         count += 1
-    print("Found %d control studies in %s." % (count, folder_path))
+    logger.info("Found %d control studies in %s." % (count, folder_path))
     return samples_list
 
 
@@ -314,7 +315,7 @@ def get_Harvard_studies():
             pat_id, study_nb, srr_path, mask_path, parc_path)
         samples_list.append(new_sample)
         count += 1
-    print("Found %d studies in %s." % (count, folder_path))
+    logger.info("Found %d studies in %s." % (count, folder_path))
     return samples_list
 
 
@@ -337,7 +338,7 @@ def get_SB_atlas_studies():
             pat_id, study_nb, srr_path, mask_path, parc_path)
         samples_list.append(new_sample)
         count += 1
-    print("Found %d studies in %s." % (count, folder_path))
+    logger.info("Found %d studies in %s." % (count, folder_path))
     return samples_list
 
 
@@ -370,7 +371,7 @@ def get_dhcp_studies(use_parcellation=True):
             parcellation_path=parc_path,
         )
         samples_list.append(new_sample)
-    print("Found %d studies in the preterms dHCP dataset." %
+    logger.info("Found %d studies in the preterms dHCP dataset." %
           len(samples_list))
     return samples_list
 
@@ -393,7 +394,7 @@ def preprocessing_pipeline(sample):
 
     assert isinstance(sample, Sample)
 
-    print('\n\033[93mStart preprocessing of %s\033[0m' % sample.save_folder)
+    logger.info('Start preprocessing of %s' % sample.save_folder)
 
     # Load the SRR image, mask and segmentation
     srr_nii = load_data(sample.srr_path)
@@ -422,7 +423,7 @@ def preprocessing_pipeline(sample):
     # compute a new mask based on the segmentation
     class_present = np.unique(parcellation_np).tolist()
     if LABELS['external_csf'] in class_present:
-        print('Compute the brain mask using the parcellation that contains extra-axial CSF.')
+        logger.info('Compute the brain mask using the parcellation that contains extra-axial CSF.')
         mask_np = mask_from_seg(parcellation_np, initial_mask_np=mask_np)
 
     # pre-process the SRR
@@ -455,11 +456,13 @@ def preprocessing_pipeline(sample):
             missing_labels.append(label)
     # Skip if no missing labels
     if len(missing_labels) > 0:
+        logger.warning('Missing labels:')
+        logger.warning(missing_labels)
         # Set the superset label
         if missing_labels == [LABELS['corpus_callosum']]:
             if 'sub' in sample.patient_id:
                 superset_label = 9  # wm + cc
-                print('Convert WM into WM+CC')
+                logger.warning('Convert WM into WM+CC (superset label)')
                 crop_parc[crop_parc == LABELS['wm']] = superset_label
         else:
             import collections
@@ -486,7 +489,7 @@ def preprocessing_pipeline(sample):
     mask_path = os.path.join(study_path, 'mask.nii.gz')
     nib.save(mask_nii, mask_path)
 
-    print("%s has been pre-processed" % study_path)
+    logger.success("%s has been pre-processed" % study_path)
 
 
 if __name__ == '__main__':
@@ -495,7 +498,8 @@ if __name__ == '__main__':
     # Get info for all the studies required for the selected config
     samples = []
 
-    print('Prepare April 2022 dataset')
+    logger.info('Data will be saved in %s' % SAVE_PATH)
+
     # Data Model Dec 2021
     # Zurich data
     samples += get_normalized_studies(CORRECTED_ZURICH_DATA_DIR)  # 30
@@ -533,11 +537,11 @@ if __name__ == '__main__':
 
     if not os.path.exists(SAVE_DATA_FOLDER):
         os.mkdir(SAVE_DATA_FOLDER)
-    print('\nTotal: %d studies to preprocess' % len(samples))
+    logger.info('Total: %d studies to preprocess' % len(samples))
 
     # Pre-processing for our studies
     for s in samples:
         if os.path.exists(s.save_folder):
-            print('\n', s.save_folder, 'already exists. Skip preprocessing.')
+            logger.info('\n', s.save_folder, 'already exists. Skip preprocessing.')
             continue
         preprocessing_pipeline(s)
